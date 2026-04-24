@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { professions } from "../data";
+import diskSvg from "../assets/Disk.svg";
 
 export default function ProfessionalSection() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -55,23 +56,25 @@ export default function ProfessionalSection() {
                   viewBox={`0 0 6 ${svgHeight}`}
                   fill="none"
                 >
-                  {/* Solid line: top → active dot */}
+                  {/* Solid white bar: top → active dot */}
                   <path
                     d={`M3 0V${activeDot}`}
-                    stroke="#E9E8FF"
-                    strokeOpacity="0.9"
+                    stroke="#FFFFFF"
                     strokeWidth="5"
+                    strokeLinecap="round"
                     style={{ transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)" }}
                   />
 
-                  {/* Dashed line: active dot → last dot */}
+                  {/* Straight dashed connector: active dot → last dot */}
                   {activeIndex < professions.length - 1 && (
                     <path
-                      d={`M3 ${activeDot}V${lastDot}`}
-                      stroke="#E9E8FF"
-                      strokeOpacity="0.1"
-                      strokeWidth="5"
+                      d={`M3 ${activeDot}V${lastDot + 16}`}
+                      stroke="#8E8E8E"
+                      strokeOpacity="0.5"
+                      strokeWidth="4"
                       strokeDasharray="12 12"
+                      strokeDashoffset="6"
+                      strokeLinecap="round"
                       style={{ transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)" }}
                     />
                   )}
@@ -86,10 +89,11 @@ export default function ProfessionalSection() {
                     onClick={() => setActiveIndex(index)}
                   >
                     <div
-                      className="dot-container"
+                      className={`dot-container ${index <= activeIndex ? "reached" : ""}`}
                       ref={(el) => (dotRefs.current[index] = el)}
                     >
-                      <div className="dot"></div>
+                      <img src={diskSvg} alt="disk" className="disk-icon" />
+                      <div className={`milestone-dot ${index <= activeIndex ? "active" : ""}`}></div>
                     </div>
                     <span>{profession.title}</span>
                     {index === activeIndex && (

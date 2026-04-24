@@ -14,18 +14,54 @@ export const stats = [
 ];
 
 export const institutions = [
-  "BlackRock",
-  "Mastercard",
-  "VISA",
-  "HSBC",
-  "Standard Chartered",
-  "Goldman Sachs",
-  "Morgan Stanley",
-  "J.P. Morgan",
-  "Fidelity",
-  "DBS",
-  "Bank of America",
-  "Strategy",
+  {
+    name: "BlackRock",
+    description: "Launched the IBIT Bitcoin ETF, reaching $10B in AUM in record time. Exploring tokenized private equity funds on Ethereum.",
+  },
+  {
+    name: "Mastercard",
+    description: "Partnering with crypto exchanges for worldwide payment settlement and developing Multi-Token Network for regulated value transfer.",
+  },
+  {
+    name: "VISA",
+    description: "USDC stablecoin settlement live in the US, achieving a $3.5 billion annualised settlement run rate. Crypto card spending surged 525% in 2025.",
+  },
+  {
+    name: "HSBC",
+    description: "Enabled gold tokenization and launched digital asset custody services for institutional clients in Hong Kong and global markets.",
+  },
+  {
+    name: "Standard Chartered",
+    description: "Launched Zodia Custody and Zodia Markets to provide institutional-grade infrastructure for digital asset trading and storage.",
+  },
+  {
+    name: "Goldman Sachs",
+    description: "Active in crypto derivatives trading and exploring blockchain for bond issuance and digital asset management platforms.",
+  },
+  {
+    name: "Morgan Stanley",
+    description: "First major US bank to offer wealthy clients access to Bitcoin funds. Actively managing digital asset investment strategies.",
+  },
+  {
+    name: "J.P. Morgan",
+    description: "Developed Onyx blockchain and JPM Coin for instantaneous cross-border payments and programmable treasury services.",
+  },
+  {
+    name: "Fidelity",
+    description: "Pioneer in institutional crypto custody and execution. Its Bitcoin and Ethereum ETFs are among the most liquid in the market.",
+  },
+  {
+    name: "DBS",
+    description: "Southeast Asia's leader in digital asset banking, offering a full suite of exchange, custody, and tokenization services.",
+  },
+  {
+    name: "Bank of America",
+    description: "Regularly publishing deep research on digital assets and exploring blockchain for trade finance and payment efficiencies.",
+  },
+  {
+    name: "Strategy",
+    description: "Advising global corporations on digital asset treasury management and building decentralized finance infrastructure.",
+  },
 ];
 
 export const searches = ["Crypto CA near me", "Crypto investment advisor"];

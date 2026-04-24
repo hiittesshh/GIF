@@ -491,22 +491,104 @@ h1 span {
 }
 
 .institution-placeholder-card {
+  position: relative;
   aspect-ratio: 1.7 / 1;
   background: #121213;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
+  padding: 0;
+  box-shadow: 12px 12px 25px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.institution-placeholder-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.card-content-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo-area {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px;
-  box-shadow: 12px 12px 25px rgba(0, 0, 0, 0.5);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.description-area {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.institution-placeholder-card:hover .logo-area {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.institution-placeholder-card:hover .description-area {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.description-area p {
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+  font-weight: 400;
+  font-family: "Poppins", sans-serif;
+}
+
+.institute-bg-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.institution-logo-img {
+  max-width: 90%;
+  max-height: 80%;
+  object-fit: contain;
+  filter: brightness(1.2);
+}
+
+.institution-placeholder-card:hover .institution-logo-img {
+  max-width: 50%;
+  max-height: 35%;
 }
 
 .placeholder-logo-text {
+  position: relative;
+  z-index: 2;
   color: #fff;
   font-size: 22px;
   font-weight: 700;
-  opacity: 0.85;
+  opacity: 0.9;
   text-align: center;
   letter-spacing: -0.01em;
 }
@@ -629,7 +711,7 @@ h1 span {
 }
 
 .profession-section {
-  padding: 72px 32px;
+  padding: 40px 32px 72px;
   background: #232323;
   overflow: hidden;
   position: relative;
@@ -655,7 +737,7 @@ h1 span {
 .profession-container {
   display: flex;
   gap: 240px;
-  margin-top: 60px;
+  margin-top: 32px;
   align-items: center;
 }
 
@@ -693,7 +775,7 @@ h1 span {
 .tabs-list {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 80px;
   width: 100%;
   padding-left: 60px;
 }
@@ -735,39 +817,58 @@ h1 span {
 
 .dot-container {
   position: absolute;
-  left: -39px;
+  left: -43px;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   transition: all 0.3s ease;
   z-index: 3;
+  overflow: visible;
+  background: #232323;
 }
 
-.profession-tab.active .dot-container {
-  background: #fff;
+.dot-container.reached {
+  background: #232323;
+  border: 10px solid #fff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
-.dot {
-  width: 12px;
-  height: 12px;
-  background: #343844;
+.milestone-dot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #FFB200;
   border-radius: 50%;
+  transition: all 0.4s ease;
+  z-index: 4;
+  opacity: 0.4;
+  /* Inactive/Not reached */
+}
+
+.milestone-dot.active {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(255, 178, 0, 0.4);
+}
+
+.reached .milestone-dot {
+  opacity: 1;
+}
+
+.disk-icon {
+  width: 36px;
+  height: 36px;
+  opacity: 0.4;
   transition: all 0.3s ease;
+  z-index: 3;
 }
 
-.profession-tab.active .dot {
-  background: #FEBE2F;
-  width: 14px;
-  height: 14px;
-}
-
-.profession-tab:not(.active) .dot {
-  background: #343844;
+.profession-tab.active .disk-icon {
+  opacity: 0.8;
 }
 
 .profession-content {
