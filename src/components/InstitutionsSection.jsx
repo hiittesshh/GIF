@@ -4,14 +4,22 @@ import { institutions } from "../data";
 export default function InstitutionsSection() {
   return (
     <section className="section institutions-section">
-      <h2>
-        The World's Leading Financial Institutions Have Entered <span>Crypto</span>
+      <h2 className="institutions-title">
+        <span className="underlined text-gradient">The World's Leading</span>{" "}
+        <span className="highlight">Financial Institutions</span>{" "}
+        <span className="muted-text text-gradient">Have Entered Crypto</span>
       </h2>
-      <p>From asset management and investment banking to global payments and custody.</p>
-      <div className="logo-grid">
+      {/* <h3 className="institutions-subheading">
+        Your Clients Are Already Looking for <span className="highlight">Answers</span>
+      </h3> */} 
+      <p className="institutions-description">
+        From asset management and investment banking to global payments —
+        institutions managing trillions in assets are building dedicated crypto infrastructure.
+      </p>
+      <div className="logo-grid-v2">
         {institutions.map((institution) => (
-          <div className="institution-logo" key={institution}>
-            {institution}
+          <div className="institution-placeholder-card" key={institution}>
+            <span className="placeholder-logo-text">{institution}</span>
           </div>
         ))}
       </div>

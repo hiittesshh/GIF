@@ -17,7 +17,7 @@ export default function Footer() {
         <p>institute.grade.capital</p>
       </div>
       {columns.map(([title, ...links]) => (
-        <div className="footer-col" key={title}>
+        <div className={`footer-col footer-${title.toLowerCase().replace(/\s+/g, "-")}`} key={title}>
           <h3>{title}</h3>
           {links.map((link) => (
             <a href="#" key={link}>
