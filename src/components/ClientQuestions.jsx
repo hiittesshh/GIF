@@ -1,6 +1,60 @@
-import React from "react";
-import { Search, TrendingUp, BookOpen } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, TrendingUp } from "lucide-react";
 import { searches, questions } from "../data";
+
+function SearchPill({ text }) {
+  const [displayText, setDisplayText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
+
+  useEffect(() => {
+    // Initial trigger on mount
+    const timer = setTimeout(() => setIsTyping(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    let timeout;
+    if (isTyping) {
+      if (displayText.length < text.length) {
+        timeout = setTimeout(() => {
+          setDisplayText(text.slice(0, displayText.length + 1));
+        }, 80);
+      } else {
+        // Finished typing
+        timeout = setTimeout(() => {
+          setIsTyping(false);
+          setHasPlayedOnce(true);
+        }, 500);
+      }
+    }
+    return () => clearTimeout(timeout);
+  }, [displayText, isTyping, text]);
+
+  const handleMouseEnter = () => {
+    if (!isTyping) {
+      setDisplayText("");
+      setIsTyping(true);
+    }
+  };
+
+  return (
+    <div 
+      className={`search-pill ${isTyping ? "typing" : ""}`}
+      onMouseEnter={handleMouseEnter}
+    >
+      <Search size={18} />
+      <span className="search-text-container">
+        {displayText || (!isTyping && hasPlayedOnce ? text : "")}
+        {isTyping && <span className="cursor">|</span>}
+      </span>
+      <em>
+        <TrendingUp size={14} />
+        Rising
+      </em>
+    </div>
+  );
+}
 
 export default function ClientQuestions() {
   return (
@@ -10,15 +64,8 @@ export default function ClientQuestions() {
       </h2>
       <p>Search interest for crypto professionals in India has been rising steadily since 2024.</p>
       <div className="search-row">
-        {searches.map((search) => (
-          <div className="search-pill" key={search}>
-            <Search size={18} />
-            <span>{search}</span>
-            <em>
-              <TrendingUp size={14} />
-              Rising
-            </em>
-          </div>
+        {searches.map((search, idx) => (
+          <SearchPill key={idx} text={search} />
         ))}
       </div>
       <h3 className="questions-subheading">

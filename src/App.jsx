@@ -16,8 +16,8 @@ export default function App() {
     <main>
       <Navbar />
       <HeroSection />
-      <IntroSection />
-      <TrustBar />
+      {/* <IntroSection /> */}
+      {/* <TrustBar /> */}
       <StatsSection />
       <InstitutionsSection />
       <ClientQuestions />

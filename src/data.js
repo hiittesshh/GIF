@@ -112,4 +112,46 @@ export const blogs = [
     text: "A step-by-step guide for CAs, MFDs, and wealth advisors building crypto capability.",
     time: "10 min read",
   },
+  {
+    tag: "Regulatory",
+    title: "The Future of Crypto Regulation in India: 2025 Outlook",
+    text: "Analyzing recent policy shifts and what they mean for compliance and institutional adoption.",
+    time: "12 min read",
+  },
+  {
+    tag: "Portfolio Strategy",
+    title: "Crypto as an Alternative Asset: Modern Portfolio Theory",
+    text: "How to think about risk-adjusted returns and diversification when adding digital assets.",
+    time: "9 min read",
+  },
+  {
+    tag: "Custody",
+    title: "Self-Custody vs. Institutional Custody: A Guide for WAs",
+    text: "Understanding the security implications and operational risks for HNI crypto holdings.",
+    time: "7 min read",
+  },
+  {
+    tag: "DeFi",
+    title: "What is DeFi and Why Should Traditional Advisors Care?",
+    text: "Decoding decentralized finance and its potential to disrupt traditional banking services.",
+    time: "15 min read",
+  },
+  {
+    tag: "Stablecoins",
+    title: "The Role of Stablecoins in Global Payments and Settlement",
+    text: "Why USDC and USDT are becoming critical infrastructure for cross-border transactions.",
+    time: "8 min read",
+  },
+  {
+    tag: "Security",
+    title: "Crypto Security 101: Protecting Your Clients from Scams",
+    text: "Essential security hygiene every advisor must teach their clients in the digital asset space.",
+    time: "11 min read",
+  },
+  {
+    tag: "Tokenization",
+    title: "Real World Assets (RWA): The Next Frontier of Finance",
+    text: "How tokenized gold, real estate, and bonds are moving onto the blockchain.",
+    time: "13 min read",
+  },
 ];
