@@ -470,7 +470,7 @@ h1 span {
   position: absolute;
   font-family: "Inter", sans-serif;
   font-size: 70px;
-  font-weight: 700;
+  font-weight: 700; 
   color: #ffffff;
   opacity: 0.15;
   filter: blur(4px);
