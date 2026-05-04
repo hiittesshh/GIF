@@ -453,11 +453,13 @@ export default function StatsSection() {
               ? "opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)"
               : "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
             pointerEvents: isMobile ? (mobileProgress > 0.5 ? "auto" : "none") : showCards ? "auto" : "none",
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            margin: "0",
-            width: isMobile ? "calc(100% - 40px)" : "auto"
+            ...(isMobile ? {
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              margin: "0",
+              width: "calc(100% - 40px)"
+            } : {})
           }}
         >
           {stats.map((stat, idx) => {
