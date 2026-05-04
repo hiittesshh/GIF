@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { stats } from "../data";
 
 export default function StatsSection() {
@@ -10,13 +10,19 @@ export default function StatsSection() {
   const boundsRef = useRef({ width: 0, height: 0, dpr: 1 });
   const animationFrameRef = useRef(null);
   const lastTimestampRef = useRef(0);
-  const frameCountRef = useRef(0);
+
   const [showCards, setShowCards] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
-  const floatingOrbs = Array.from({ length: 36 }, (_, index) => ({
-    id: index + 1,
-    size: 1.1 + ((index * 5) % 0.7),
-  }));
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileProgress, setMobileProgress] = useState(0);
+
+  const floatingOrbs = useMemo(() => {
+    const orbCount = isMobile ? 18 : 36;
+    return Array.from({ length: orbCount }, (_, index) => ({
+      id: index + 1,
+      size: 1.1 + ((index * 5) % 0.7),
+    }));
+  }, [isMobile]);
 
   const randomBetween = (min, max) => min + Math.random() * (max - min);
 
@@ -38,7 +44,14 @@ export default function StatsSection() {
 
     spriteContext.globalCompositeOperation = "lighter";
 
-    const halo = spriteContext.createRadialGradient(center, center, 0, center, center, haloRadius);
+    const halo = spriteContext.createRadialGradient(
+      center,
+      center,
+      0,
+      center,
+      center,
+      haloRadius
+    );
     halo.addColorStop(0, "rgba(255, 248, 190, 0.45)");
     halo.addColorStop(0.24, "rgba(255, 228, 96, 0.24)");
     halo.addColorStop(0.56, "rgba(254, 190, 47, 0.08)");
@@ -49,7 +62,14 @@ export default function StatsSection() {
     spriteContext.arc(center, center, haloRadius, 0, Math.PI * 2);
     spriteContext.fill();
 
-    const core = spriteContext.createRadialGradient(center, center, 0, center, center, cacheKey * 1.1);
+    const core = spriteContext.createRadialGradient(
+      center,
+      center,
+      0,
+      center,
+      center,
+      cacheKey * 1.1
+    );
     core.addColorStop(0, "rgba(255, 251, 226, 0.95)");
     core.addColorStop(0.38, "rgba(255, 230, 92, 0.88)");
     core.addColorStop(1, "rgba(254, 190, 47, 0.82)");
@@ -77,116 +97,106 @@ export default function StatsSection() {
       y: randomBetween(radius, height - radius),
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
-      speed,
-      phase: Math.random() * Math.PI * 2,
-      pulse: randomBetween(0.85, 1.1),
     };
   };
 
   useEffect(() => {
+    const updateViewport = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+    };
+
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+
+    return () => {
+      window.removeEventListener("resize", updateViewport);
+    };
+  }, []);
+
+  useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
+    if (isMobile) return;
 
     const preventDefault = (e) => {
       if (e.cancelable) e.preventDefault();
     };
 
     const handleWheel = (e) => {
-      if (isLocked || window.innerWidth < 768) {
-        return;
-      }
+      if (isLocked || window.innerWidth < 1024) return;
 
       const rect = section.getBoundingClientRect();
       const viewportMid = window.innerHeight / 2;
       const sectionMid = rect.top + rect.height / 2;
 
-      // Only hijack if section is nearly centered
       if (Math.abs(sectionMid - viewportMid) < 60) {
         if (!showCards && e.deltaY > 0) {
-          // If moving down and text is showing: lock and show cards
           preventDefault(e);
           setIsLocked(true);
           setShowCards(true);
 
           window.scrollTo({
             top: window.scrollY + (sectionMid - viewportMid),
-            behavior: "smooth"
+            behavior: "smooth",
           });
 
-          setTimeout(() => setIsLocked(false), 1200);
+          setTimeout(() => setIsLocked(false), 1000);
         } else if (showCards && e.deltaY < 0) {
-          // If moving up and cards are showing: lock and show text
           preventDefault(e);
           setIsLocked(true);
           setShowCards(false);
 
           window.scrollTo({
             top: window.scrollY + (sectionMid - viewportMid),
-            behavior: "smooth"
+            behavior: "smooth",
           });
 
-          setTimeout(() => setIsLocked(false), 1200);
+          setTimeout(() => setIsLocked(false), 1000);
         }
       }
     };
 
-    if (window.innerWidth >= 768) {
-      window.addEventListener("wheel", handleWheel, { passive: false });
-    }
-    
+    window.addEventListener("wheel", handleWheel, { passive: false });
+
     return () => {
       window.removeEventListener("wheel", handleWheel);
     };
-  }, [showCards, isLocked]);
+  }, [showCards, isLocked, isMobile]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        // setShowCards(true); // Don't force it immediately, let the scroll handle it
-      }
-    };
-    
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    
     const handleScroll = () => {
       const section = sectionRef.current;
-      if (!section || window.innerWidth >= 1024) return;
+      if (!section || !isMobile) return;
 
       const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
+      const vh = window.innerHeight;
+
+      // Natural scroll progress:
+      // Start when 20% visible, finish when 80% through
+      const start = vh * 0.9;
+      const end = vh * 0.1; 
       
-      // Calculate progress: 0 when bottom enters, 1 when top leaves
-      const totalDist = windowHeight + rect.height;
-      const currentDist = windowHeight - rect.top;
-      const rawProgress = currentDist / totalDist;
-      
-      // Map progress to specific animation phases
-      // Phase 1: 0.3 - 0.45 (Heading shows)
-      // Phase 2: 0.45 - 0.55 (Heading fades, Cards start)
-      // Phase 3: 0.55 - 0.8 (Cards fully show)
-      
-      if (rawProgress > 0.52) {
-        if (!showCards) setShowCards(true);
-      } else if (rawProgress < 0.45) {
-        if (showCards) setShowCards(false);
-      }
+      const progress = (start - rect.top) / (start - end);
+      const clamped = Math.max(0, Math.min(1, progress));
+
+      setMobileProgress(clamped);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    if (isMobile) {
+      handleScroll();
+      window.addEventListener("scroll", handleScroll, { passive: true });
+    }
 
     return () => {
-      window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
     const layer = floatingLayerRef.current;
     const canvas = canvasRef.current;
-    if (!layer) return;
-    if (!canvas) return;
+    if (!layer || !canvas) return;
 
     const context = canvas.getContext("2d");
     if (!context) return;
@@ -200,7 +210,9 @@ export default function StatsSection() {
 
       if (shouldInitialize || !particlesRef.current.length) {
         boundsRef.current = { width: nextWidth, height: nextHeight, dpr };
-        particlesRef.current = floatingOrbs.map((orb) => createParticle(orb, nextWidth, nextHeight));
+        particlesRef.current = floatingOrbs.map((orb) =>
+          createParticle(orb, nextWidth, nextHeight)
+        );
         canvas.width = Math.floor(nextWidth * dpr);
         canvas.height = Math.floor(nextHeight * dpr);
         canvas.style.width = `${nextWidth}px`;
@@ -314,9 +326,11 @@ export default function StatsSection() {
     const tick = (timestamp) => {
       const particles = particlesRef.current;
       const { width, height } = boundsRef.current;
-      const deltaTime = lastTimestampRef.current ? Math.min((timestamp - lastTimestampRef.current) / 1000, 0.025) : 0.016;
+      const deltaTime = lastTimestampRef.current
+        ? Math.min((timestamp - lastTimestampRef.current) / 1000, 0.025)
+        : 0.016;
+
       lastTimestampRef.current = timestamp;
-      frameCountRef.current += 1;
 
       context.clearRect(0, 0, width, height);
 
@@ -339,7 +353,7 @@ export default function StatsSection() {
 
       resolveCollisions();
 
-      particles.forEach((particle, index) => {
+      particles.forEach((particle) => {
         const sprite = getParticleSprite(particle.r);
         if (!sprite) return;
 
@@ -349,7 +363,6 @@ export default function StatsSection() {
       });
 
       context.globalAlpha = 1;
-
       animationFrameRef.current = window.requestAnimationFrame(tick);
     };
 
@@ -361,7 +374,7 @@ export default function StatsSection() {
         window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []);
+  }, [floatingOrbs]);
 
   const HeadingContent = () => (
     <>
@@ -374,7 +387,10 @@ export default function StatsSection() {
     </>
   );
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+  const mobileHeadingOpacity = 1 - Math.min(mobileProgress * 2, 1);
+  const mobileHeadingY = -24 * mobileProgress;
+  const mobileHeadingScale = 1 - mobileProgress * 0.04;
+  const mobileHeadingBlur = mobileProgress * 4;
 
   return (
     <section className="stats-section" ref={sectionRef}>
@@ -382,43 +398,43 @@ export default function StatsSection() {
       <div className="gold-floating-layer" aria-hidden="true" ref={floatingLayerRef}>
         <canvas className="gold-floating-canvas" ref={canvasRef} />
       </div>
-      
+
       <div className="stats-content-inner">
-        {/* Mobile Heading - Simple and clean */}
         {isMobile ? (
-          <h2 
+          <h2
             className="stat-heading-mobile"
-            style={{ 
-              opacity: showCards ? 0 : 1,
-              transform: showCards ? 'translateY(-30px)' : 'translateY(0)',
-              transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-              marginBottom: '40px',
-              textAlign: 'center',
-              position: showCards ? 'absolute' : 'relative',
-              visibility: showCards ? 'hidden' : 'visible'
+            style={{
+              opacity: mobileHeadingOpacity,
+              transform: `translate(-50%, calc(-50% + ${mobileHeadingY}px)) scale(${mobileHeadingScale})`,
+              filter: `blur(${mobileHeadingBlur}px)`,
+              transition: "opacity 0.25s linear, transform 0.25s ease-out, filter 0.25s linear",
+              textAlign: "center",
+              zIndex: mobileProgress > 0.5 ? 1 : 2
             }}
           >
             <HeadingContent />
           </h2>
         ) : (
-          /* Desktop Split Text Animation Layer */
-          <div className="split-text-container" style={{ pointerEvents: showCards ? 'none' : 'auto' }}>
-            <h2 
+          <div
+            className="split-text-container"
+            style={{ pointerEvents: showCards ? "none" : "auto" }}
+          >
+            <h2
               className="stat-heading split left"
-              style={{ 
+              style={{
                 opacity: showCards ? 0 : 1,
-                transform: `translate(calc(-50% - ${showCards ? '60vw' : '0px'}), -50%)`,
-                transition: 'all 0.9s cubic-bezier(0.16, 1, 0.3, 1)'
+                transform: `translate(calc(-50% - ${showCards ? "60vw" : "0px"}), -50%)`,
+                transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
               }}
             >
               <HeadingContent />
             </h2>
-            <h2 
+            <h2
               className="stat-heading split right"
-              style={{ 
+              style={{
                 opacity: showCards ? 0 : 1,
-                transform: `translate(calc(-50% + ${showCards ? '60vw' : '0px'}), -50%)`,
-                transition: 'all 0.9s cubic-bezier(0.16, 1, 0.3, 1)'
+                transform: `translate(calc(-50% + ${showCards ? "60vw" : "0px"}), -50%)`,
+                transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
               }}
             >
               <HeadingContent />
@@ -426,38 +442,56 @@ export default function StatsSection() {
           </div>
         )}
 
-        {/* Cards Animation Layer */}
-        <div 
+        <div
           className="stat-grid"
-          style={{ 
-            opacity: showCards ? 1 : 0,
-            transform: isMobile 
-              ? `translateY(${showCards ? '0px' : '60px'})` 
+          style={{
+            opacity: isMobile ? (mobileProgress > 0.3 ? 1 : 0) : showCards ? 1 : 0,
+            transform: isMobile
+              ? `translate(-50%, calc(-50% + ${40 - mobileProgress * 40}px))`
               : `translate(-50%, -50%) scale(${showCards ? 1 : 0.95})`,
-            transition: 'all 0.9s cubic-bezier(0.16, 1, 0.3, 1)',
-            pointerEvents: showCards ? 'auto' : 'none',
-            position: isMobile && !showCards ? 'absolute' : (isMobile ? 'relative' : 'absolute'),
-            top: isMobile ? 'auto' : '50%',
-            left: isMobile ? 'auto' : '50%',
-            margin: isMobile ? '0 auto' : '0',
-            visibility: isMobile && !showCards ? 'hidden' : 'visible'
+            transition: isMobile
+              ? "opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)"
+              : "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+            pointerEvents: isMobile ? (mobileProgress > 0.5 ? "auto" : "none") : showCards ? "auto" : "none",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            margin: "0",
+            width: isMobile ? "calc(100% - 40px)" : "auto"
           }}
         >
-          {stats.map((stat, idx) => (
-            <article 
-              className="stat-card" 
-              key={idx}
-              style={{
-                transitionDelay: `${idx * 0.1}s`
-              }}
-            >
-              <div className="stat-number-box">
-                <span className="stat-value-ghost">{stat.value}</span>
-                <span className="stat-value-main">{stat.value}</span>
-              </div>
-              <p className="stat-label-text">{stat.label}</p>
-            </article>
-          ))}
+          {stats.map((stat, idx) => {
+            const cardStart = 0.4 + idx * 0.08;
+            const cardProgress = isMobile
+              ? Math.max(0, Math.min(1, (mobileProgress - cardStart) / 0.2))
+              : showCards
+              ? 1
+              : 0;
+
+            return (
+              <article
+                className="stat-card"
+                key={idx}
+                style={{
+                  opacity: isMobile ? cardProgress : 1,
+                  transform: isMobile
+                    ? `translateY(${36 - cardProgress * 36}px) scale(${0.96 + cardProgress * 0.04})`
+                    : "none",
+                  filter: isMobile ? `blur(${(1 - cardProgress) * 5}px)` : "none",
+                  transition: isMobile
+                    ? "opacity 0.2s linear, transform 0.2s linear, filter 0.2s linear"
+                    : "transform 0.3s ease",
+                  transitionDelay: !isMobile ? `${idx * 0.1}s` : "0s",
+                }}
+              >
+                <div className="stat-number-box">
+                  <span className="stat-value-ghost">{stat.value}</span>
+                  <span className="stat-value-main">{stat.value}</span>
+                </div>
+                <p className="stat-label-text">{stat.label}</p>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

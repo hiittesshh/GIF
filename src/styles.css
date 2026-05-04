@@ -603,6 +603,56 @@ h1 span {
   z-index: 1;
 }
 
+.stat-heading-mobile {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 100%;
+  max-width: 900px;
+  text-align: center;
+  padding: 0 12px;
+  will-change: transform, opacity, filter;
+}
+
+@media (max-width: 1024px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    position: relative;
+    top: auto;
+    left: auto;
+    margin: 0 auto;
+    z-index: 2;
+  }
+
+  .stats-section {
+    height: auto;
+    min-height: 600px;
+    padding: 60px 0;
+    display: block;
+  }
+
+  .stats-content-inner {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .stat-heading.right {
+    display: none;
+  }
+
+  .stat-card {
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
+    transform-origin: center bottom;
+  }
+}
+
 .text-gold-gradient {
   font-size: 53.039px;
   font-style: normal;
@@ -2053,32 +2103,30 @@ h1 span {
     position: relative;
     top: auto;
     left: auto;
-    transform: none !important;
+    /* transform: none !important; */
     margin: 0 auto;
     z-index: 2;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-  .stats-section {
-    height: auto;
-    min-height: 1000px;
-    padding: 40px 0 60px;
-    display: block;
-  }
-  .stats-content-inner {
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  .stat-heading.right {
-    display: none;
+    /* opacity: 1 !important; */
+    /* pointer-events: auto !important; */
   }
   .stats-section {
     height: auto;
     min-height: 600px;
-    padding: 60px 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stats-content-inner {
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
   }
   .logo-grid-v2 {
     gap: 20px;
