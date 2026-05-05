@@ -25,8 +25,14 @@ function SearchPill({ text }) {
         timeout = setTimeout(() => {
           setIsTyping(false);
           setHasPlayedOnce(true);
-        }, 500);
+        }, 2000); // Wait 2s before restarting
       }
+    } else {
+      // Not typing, start again after a short delay
+      timeout = setTimeout(() => {
+        setDisplayText("");
+        setIsTyping(true);
+      }, 500);
     }
     return () => clearTimeout(timeout);
   }, [displayText, isTyping, text]);

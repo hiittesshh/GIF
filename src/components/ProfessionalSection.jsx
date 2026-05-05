@@ -40,11 +40,13 @@ export default function ProfessionalSection() {
     if (!carouselRef.current) return;
     const scrollLeft = carouselRef.current.scrollLeft;
     const width = carouselRef.current.offsetWidth;
-    const newIndex = Math.round(scrollLeft / width);
+    const newIndex = Math.min(professions.length - 1, Math.max(0, Math.round(scrollLeft / width)));
     if (newIndex !== activeIndex) {
       setActiveIndex(newIndex);
     }
   };
+
+  const currentProfession = professions[activeIndex] || professions[0];
 
   return (
     <section className="profession-section">
@@ -88,16 +90,22 @@ export default function ProfessionalSection() {
 
           <div className="profession-content">
             <div className="display-card">
-              <img key={professions[activeIndex].image} src={professions[activeIndex].image} alt={professions[activeIndex].title} className="display-image" />
+              <img 
+                key={currentProfession?.image} 
+                src={currentProfession?.image} 
+                alt={currentProfession?.title} 
+                className="display-image" 
+                style={activeIndex === 1 ? { transform: "scaleX(-1)" } : {}}
+              />
               <div className="display-overlay">
-                <div key={activeIndex} className="overlay-content">
+                <div key={activeIndex} className={`overlay-content ${activeIndex !== null ? "active" : ""}`}>
                   <p className="profession-desc">
                     <span className="yellow-dot"></span>
-                    {professions[activeIndex].text}
+                    {currentProfession?.text}
                   </p>
                   <div className="learn-more-wrapper">
                     <a href="#" className="learn-more">
-                      {professions[activeIndex].link} <ArrowRight size={16} />
+                      {currentProfession?.link} <ArrowRight size={16} />
                     </a>
                   </div>
                 </div>
@@ -116,7 +124,12 @@ export default function ProfessionalSection() {
             {professions.map((profession, index) => (
               <div className="carousel-card-wrapper" key={index}>
                 <div className="display-card mobile-card">
-                  <img src={profession.image} alt={profession.title} className="display-image" />
+                  <img 
+                    src={profession.image} 
+                    alt={profession.title} 
+                    className="display-image" 
+                    style={index === 1 ? { transform: "scaleX(-1)" } : {}}
+                  />
                   <div className="mobile-card-tag">{profession.title}</div>
                   <div className="display-overlay">
                     <div className="overlay-content">

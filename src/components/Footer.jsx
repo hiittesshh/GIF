@@ -13,8 +13,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-brand">
         <Logo />
-        <p>A Grade Capital Initiative</p>
-        <p>institute.grade.capital</p>
+        <p>A Grade Capital Initiative • institute.grade.capital</p>
       </div>
       {columns.map(([title, ...links]) => (
         <div className={`footer-col footer-${title.toLowerCase().replace(/\s+/g, "-")}`} key={title}>

@@ -424,7 +424,7 @@ export default function StatsSection() {
               style={{
                 opacity: showCards ? 0 : 1,
                 transform: `translate(calc(-50% - ${showCards ? "60vw" : "0px"}), -50%)`,
-                transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+                transition: "all 1.8s cubic-bezier(0.22, 1, 0.36, 1)",
               }}
             >
               <HeadingContent />
@@ -434,7 +434,7 @@ export default function StatsSection() {
               style={{
                 opacity: showCards ? 0 : 1,
                 transform: `translate(calc(-50% + ${showCards ? "60vw" : "0px"}), -50%)`,
-                transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+                transition: "all 1.8s cubic-bezier(0.22, 1, 0.36, 1)",
               }}
             >
               <HeadingContent />
@@ -451,7 +451,7 @@ export default function StatsSection() {
               : `translate(-50%, -50%) scale(${showCards ? 1 : 0.95})`,
             transition: isMobile
               ? "opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)"
-              : "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+              : "all 1.8s cubic-bezier(0.22, 1, 0.36, 1)",
             pointerEvents: isMobile ? (mobileProgress > 0.5 ? "auto" : "none") : showCards ? "auto" : "none",
             ...(isMobile ? {
               position: "absolute",
