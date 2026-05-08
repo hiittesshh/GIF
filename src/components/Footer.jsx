@@ -26,7 +26,7 @@ export default function Footer() {
         </div>
       ))}
       <div className="footer-bottom">
-        <span>© 2026 Grade Institute of Finance. All rights reserved.</span>
+        <span>© 2026 Atlantease Ventures Inc (Trademark : 'Grade' & 'GRADE') All rights reserved.</span>
         <span>Data sources: Chainalysis, CoinGecko, Bitwise, ETFGI, Coinbase Institutional</span>
       </div>
     </footer>
